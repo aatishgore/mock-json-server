@@ -1,18 +1,18 @@
-const express = require('express');
-const _ = require('lodash');
-const cors = require('cors');
-const enableDestroy = require('server-destroy');
-const fs = require('fs-extra');
-const chalk = require('chalk');
-const moment = require('moment');
+const express = require("express");
+const _ = require("lodash");
+const cors = require("cors");
+const enableDestroy = require("server-destroy");
+const fs = require("fs-extra");
+const chalk = require("chalk");
+const moment = require("moment");
 
 let server = null;
 let app = null;
 
-const methods = ['get', 'post', 'put', 'delete'];
+const methods = ["get", "post", "put", "delete"];
 const isDebug = process.env.DEBUG || false;
 
-const log = data => {
+const log = (data) => {
   if (!process.env.NO_OUTPUT) {
     console.log(data);
   }
@@ -21,8 +21,8 @@ const log = data => {
 function logger(req, res, next) {
   log(
     moment.utc().format() +
-      ' : ' +
-      chalk.yellow('[' + req.method + '] ' + req.url)
+      " : " +
+      chalk.yellow("[" + req.method + "] " + req.url)
   );
   next();
 }
@@ -32,21 +32,21 @@ const start = async (source, port) => {
   app.use(cors());
   app.use(logger);
   app.locals = {
-    _: _
+    _: _,
   };
-  app.set('views', __dirname + '/pages');
-  app.set('view engine', 'ejs');
+  app.set("views", __dirname + "/pages");
+  app.set("view engine", "ejs");
   const sources = await getSource(source);
   _makeRoutes(sources);
   _makeHome(port, sources);
 };
 
-const getSource = async source => {
+const getSource = async (source) => {
   if (_.isObject(source)) {
     return source;
   }
   try {
-    const data = await fs.readFile(source, 'utf-8');
+    const data = await fs.readFile(source, "utf-8");
     return JSON.parse(data);
   } catch (e) {
     log(chalk.red(`Could not read source file.\n${e.message}`));
@@ -58,7 +58,7 @@ const getSource = async source => {
 };
 
 const listen = (port, host, callback) => {
-  server = app.listen(port, host, function() {
+  server = app.listen(port, host, function () {
     callback();
   });
   enableDestroy(server);
@@ -69,10 +69,10 @@ const end = () => {
 };
 
 function _makeRoutes(source) {
-  _.each(source, function(value, path) {
-    _.each(value, function(a, method) {
+  _.each(source, function (value, path) {
+    _.each(value, function (a, method) {
       if (_.includes(methods, method)) {
-        app[method](path, function(req, res) {
+        app[method](path, function (req, res) {
           res.jsonp(a);
         });
       }
@@ -81,27 +81,25 @@ function _makeRoutes(source) {
 }
 
 function _makeHome(port, source) {
-  app.get('/', function(req, res) {
-    res.render('index', {
+  app.get("/", function (req, res) {
+    res.render("index", {
       port: port,
-      database: source
+      database: source,
     });
   });
 }
 
-module.exports = function(source, port, host) {
+module.exports = function (source, port, host) {
   return {
     start: async () => {
       try {
         await start(source, port);
-        listen(port, host, function() {
-          log(
-            chalk.green(`JSON Server running at http://${host}:${port}/`)
-          );
+        listen(port, host, function () {
+          log(chalk.green(`JSON Server running at http://${host}:${port}/`));
           return true;
         });
       } catch (e) {
-        log(chalk.red('Could not start mock server.'));
+        log(chalk.red("Could not start mock server."));
         if (isDebug) {
           log(e);
         }
@@ -112,13 +110,11 @@ module.exports = function(source, port, host) {
       try {
         end();
         await start(s, port);
-        listen(port, host, function() {
-          log(
-            chalk.green(`JSON Server running at http://${host}:${port}/`)
-          );
+        listen(port, host, function () {
+          log(chalk.green(`JSON Server running at http://${host}:${port}/`));
         });
       } catch (e) {
-        log(chalk.red('There was an error reloading the app.'));
+        log(chalk.red("There was an error reloading the app."));
         if (isDebug) {
           log(e);
         }
@@ -127,6 +123,6 @@ module.exports = function(source, port, host) {
     },
     stop: () => {
       end();
-    }
+    },
   };
 };
