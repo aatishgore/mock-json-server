@@ -7,6 +7,14 @@
             border-radius: 0;
             box-shadow: none;
         }
+
+        textarea {
+            width: 100%;
+            min-height: 30rem;
+            font-family: "Lucida Console", Monaco, monospace;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
     </style>
 </head>
 
@@ -23,9 +31,14 @@
 
                     <span class="label label-primary"><%= method %></span>
                 </div>
-                <pre>
-                    <%- JSON.stringify(data.path.method) %>
-                </pre>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Response: </div>
+                    <div class="panel-body">
+                        <pre><%- JSON.stringify(data[method], undefined, 4) %></pre>
+                    </div>
+                </div>
+
+
                 <% }); %>
 
             </div>
