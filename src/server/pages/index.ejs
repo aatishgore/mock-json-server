@@ -47,12 +47,23 @@
                     </div>
                 </div>
                 <% } %>
+                <% if(data[method]["response"] !== undefined) { %>
                 <div class="panel panel-default">
                     <div class="panel-heading">Response: </div>
                     <div class="panel-body">
                         <pre><%- JSON.stringify(data[method]["response"], undefined, 4) %></pre>
                     </div>
                 </div>
+                <% } %>
+
+                <% if(data[method]["responseError"] !== undefined) { %>
+                <div class="panel panel-default">
+                    <div class="panel-heading">ResponseError: </div>
+                    <div class="panel-body">
+                        <pre><%- JSON.stringify(data[method]["responseError"], undefined, 4) %></pre>
+                    </div>
+                </div>
+                <% } %>
 
 
                 <% }); %>

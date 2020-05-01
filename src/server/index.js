@@ -74,9 +74,13 @@ function _makeRoutes(source) {
       if (_.includes(methods, method)) {
         app[method](path, function(req, res) {
           if (a["headers"] !== undefined) {
-            console.log(req.headers.authorization);
             if (!req.headers.authorization) {
               return res.status(403).json({ error: "No credentials sent!" });
+            }
+            if (req.headers.error === "true") {
+              if (a["responseError"] !== undefined)
+                return res.status(403).json(a["responseError"]);
+              else return res.status(403).json({ error: "Unhandled error" });
             }
           }
           res.jsonp(a["response"]);
