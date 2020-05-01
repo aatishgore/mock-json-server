@@ -58,7 +58,7 @@ const getSource = async (source) => {
 };
 
 const listen = (port, host, callback) => {
-  server = app.listen(port, host, function () {
+  server = app.listen(port, host, function() {
     callback();
   });
   enableDestroy(server);
@@ -69,11 +69,17 @@ const end = () => {
 };
 
 function _makeRoutes(source) {
-  _.each(source, function (value, path) {
-    _.each(value, function (a, method) {
+  _.each(source, function(value, path) {
+    _.each(value, function(a, method) {
       if (_.includes(methods, method)) {
-        app[method](path, function (req, res) {
-          res.jsonp(a);
+        app[method](path, function(req, res) {
+          if (a["headers"] !== undefined) {
+            console.log(req.headers.authorization);
+            if (!req.headers.authorization) {
+              return res.status(403).json({ error: "No credentials sent!" });
+            }
+          }
+          res.jsonp(a["response"]);
         });
       }
     });
@@ -81,7 +87,7 @@ function _makeRoutes(source) {
 }
 
 function _makeHome(port, source) {
-  app.get("/", function (req, res) {
+  app.get("/", function(req, res) {
     res.render("index", {
       port: port,
       database: source,
@@ -89,12 +95,12 @@ function _makeHome(port, source) {
   });
 }
 
-module.exports = function (source, port, host) {
+module.exports = function(source, port, host) {
   return {
     start: async () => {
       try {
         await start(source, port);
-        listen(port, host, function () {
+        listen(port, host, function() {
           log(chalk.green(`JSON Server running at http://${host}:${port}/`));
           return true;
         });
@@ -110,7 +116,7 @@ module.exports = function (source, port, host) {
       try {
         end();
         await start(s, port);
-        listen(port, host, function () {
+        listen(port, host, function() {
           log(chalk.green(`JSON Server running at http://${host}:${port}/`));
         });
       } catch (e) {
