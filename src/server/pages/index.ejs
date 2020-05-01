@@ -31,10 +31,26 @@
 
                     <span class="label label-primary"><%= method %></span>
                 </div>
+                <% if(data[method]["headers"] !== undefined) { %>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Headers: </div>
+                    <div class="panel-body">
+                        <pre><%- JSON.stringify(data[method]["headers"], undefined, 4) %></pre>
+                    </div>
+                </div>
+                <% } %>
+                <% if(data[method]["request"] !== undefined) { %>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Request: </div>
+                    <div class="panel-body">
+                        <pre><%- JSON.stringify(data[method]["request"], undefined, 4) %></pre>
+                    </div>
+                </div>
+                <% } %>
                 <div class="panel panel-default">
                     <div class="panel-heading">Response: </div>
                     <div class="panel-body">
-                        <pre><%- JSON.stringify(data[method], undefined, 4) %></pre>
+                        <pre><%- JSON.stringify(data[method]["response"], undefined, 4) %></pre>
                     </div>
                 </div>
 
