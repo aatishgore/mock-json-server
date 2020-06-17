@@ -26,7 +26,7 @@
             <div class="well">
                 <% _.each(data, function(d, method){ %>
                 <a style="display: inline;"
-                    href="http://localhost:<%= port %><%= path %>">http://localhost:<%= port %><%= path %></a>
+                    href="http://localhost:<%= port %><%= data[method]['uri']? data[method]['uri'] : path  %>">http://localhost:<%= port %><%= data[method]["uri"]?data[method]["uri"]: path %></a>
                 <div class="methods" style="display: inline;">
 
                     <span class="label label-primary"><%= method %></span>
