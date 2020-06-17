@@ -72,7 +72,7 @@ function _makeRoutes(source) {
   _.each(source, function(value, path) {
     _.each(value, function(a, method) {
       if (_.includes(methods, method)) {
-        app[method](path, function(req, res) {
+        app[method](a["uri"]? a["uri"]: path, function(req, res) {
           if (a["headers"] !== undefined) {
             if (!req.headers.authorization) {
               return res.status(403).json({ error: "No credentials sent!" });
